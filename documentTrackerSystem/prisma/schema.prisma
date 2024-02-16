@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId      Int         @id @default(autoincrement())
+  name        String
+  email       String      @unique
+  password    String
+  division    Division    @relation(fields: [divisionId], references: [divisionId])
+  divisionId  Int
+  department  Department  @relation(fields: [departmentId], references: [deptId])
+  departmentId Int
+  document    Document[]
+}
+model Division {
+  divisionId    Int       @id @default(autoincrement())
+  divisionName  String
+  user          User[]
+}
+model Department {
+  deptId      Int       @id @default(autoincrement())
+  deptName    String
+  user        User[]
+}
+
+
+model Document {
+  docID     Int      @id @default(autoincrement())
+  status    Status   @default(Pending)
+  date      DateTime @default(now())
+  subject   String
+  fileName  String
+  ref       String
+  author    User     @relation(fields: [authorId], references: [userId])
+  authorId  Int
+}
+
+model Trail {
+  trailside   Int      @id @default(autoincrement())
+  sender      Int
+  receiver    Int
+  status      Status   @default(Pending)
+}
+enum Status {
+  Pending
+  Forwarded
+  Archived
+}
+
+
+
+
+
+
+
+

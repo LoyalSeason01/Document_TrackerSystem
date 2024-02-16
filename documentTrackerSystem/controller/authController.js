@@ -14,15 +14,15 @@ async function logInUser(req, res){
         return res.status(400).json({error : error.array()});
     }else{
     const user = await userModel.getUser(email);
-      
+    
     if(user){
-        const auth = await bCrypt.compare(password, user.user.password);
+        const auth = await bCrypt.compare(password, user.password);
     
         if(auth){
-            res.cookie('refreshToken', refreshToken(user.user.userId), {httpOnly: true, sameSite : 'strict'});
-            res.cookie('token', generateToken(user.user.userId), {httpOnly: true, sameSite : 'strict'});
+            res.cookie('refreshToken', refreshToken(user.userId), {httpOnly: true, sameSite : 'strict'});
+            res.cookie('token', generateToken(user.userId), {httpOnly: true, sameSite : 'strict'});
           return res.status(200).json({
-            token : generateToken(user.user.userId),
+            token : generateToken(user.userId),
           });
         }else{
             return res.status(401).json({error : "Incorrect Password"})
@@ -69,9 +69,43 @@ async function signUpUser(req, res){
 
 
 async function forgotPassword(req, res){
-  const userDetails = req.body;
+  const {email} = req.body;
 
-  return res.send('Forgot Password')
+  const user = await userModel.getUser(email);
+
+  if(!user){
+    return res.status(404).json({error : 'Forbidden'});
+  }
+
+  const accessToken = generateResetToken(user.userId)
+  const resetToken = "/resetPassword/"+accessToken
+  return res.status(200).send(resetToken)
+}
+
+
+async function resetPassword(req, res){
+        const { email }= req.user
+        const {password, confirmPassword} = req.body
+        
+        const error = validationResult(req);
+
+        if(!error.isEmpty()){
+           return res.status(400).json({error : error.array()});
+        }else{
+          if(password === confirmPassword){
+         
+            const salt = await bCrypt.genSalt();
+            const encryptedPassword = await bCrypt.hash(password, salt)
+
+            const passwordChange = await userModel.resetPassword(email, encryptedPassword);
+            return res.status(200).json({passwordChange});
+
+          }else{
+            return res.json({error : 'Check Your Password'})
+          }
+        }
+
+      
 }
 
 async function refreshedUser(req, res){
@@ -104,10 +138,18 @@ function generateToken(id){
       return jwt.sign({id}, process.env.REFRESH_TOKEN, {expiresIn : '1d'});
   }
 
+// Function to Generate passwordResetToken
+function generateResetToken(id){
+  return jwt.sign({id}, process.env.PASSWORD_RESET, {
+    expiresIn: '5m',
+  });
+}
+
 
 module.exports = {
     logInUser,
     signUpUser,
     forgotPassword,
+    resetPassword,
     refreshedUser,
 }

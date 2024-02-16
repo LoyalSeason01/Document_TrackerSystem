@@ -5,19 +5,12 @@ const prisma = new PrismaClient()
 
 async function getUser(email){
     try {
-        const user = await prisma.user.findUnique({
+
+
+        return await prisma.user.findUnique({
             where : {email : email}
         })
-        
-       const division = await prisma.division.findUnique({
-        where : {divisionId : user.divisionId}
-       })
-
-       const department = await prisma.department.findUnique({
-        where : {deptId : user.departmentId}
-       })
-        
-        return {user, division, department};
+               
 
     } catch (error) {
         return error;
@@ -126,6 +119,34 @@ async function updateUser(email, newEmail, name,  divisionId, divisionName, dept
     }
 }
 
+async function resetPassword(email, password){
+  
+    try {
+        // Check if the user exists
+        const foundUser = await prisma.user.findUnique({
+           where: { email }
+       });
+
+       if (!foundUser) {
+          return {error : 'Forbidden'}
+       }
+      
+       // Update the user Password
+     
+      return await prisma.user.update({
+        where : {email},
+        data : {
+            password,
+        }
+      });
+
+   
+} catch (error) {
+   return error;
+}
+    
+}
+
 async function deleteUser(email){
     try {
         const foundEmail = await prisma.user.findMany({
@@ -149,5 +170,6 @@ module.exports = {
     getUserById,
     createUser,
     updateUser,
+    resetPassword,
     deleteUser,
 }

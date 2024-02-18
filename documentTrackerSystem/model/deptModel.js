@@ -3,19 +3,33 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient()
 
 async function getAllDepartment(){
-    return prisma.department.findMany()
+    return prisma.department.findMany({
+        include : {
+            user : true
+        }
+    })
 }
 
-async function createDepartment(){
-
+async function createDepartment(deptName){
+    return prisma.department.create({
+        data : {
+            deptName,
+        }
+    })
 }
 
 async function updatedDepartment(){
-
+    return prisma.department.create({
+        data : {
+            deptName,
+        }
+    })
 }
 
-async function deleteDepartment(){
-
+async function deleteDepartment(deptId){
+    return prisma.department.delete({
+        where : {deptId}
+    })
 }
 
 

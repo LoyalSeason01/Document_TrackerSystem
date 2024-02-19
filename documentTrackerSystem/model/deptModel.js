@@ -10,20 +10,28 @@ async function getAllDepartment(){
     })
 }
 
-async function createDepartment(deptName){
+async function createDepartment(deptName) {     
+    try {
     return prisma.department.create({
-        data : {
-            deptName,
-        }
-    })
+    data: {
+        deptName: deptName
+    }
+});
+    } catch (error) {
+        // Handle errors appropriately
+        console.error('Error creating department:', error);
+        throw error; // rethrow the error or handle it as per your application's logic
+    }
 }
 
-async function updatedDepartment(){
-    return prisma.department.create({
+
+async function updatedDepartment(deptId, deptName){
+    return prisma.department.update({
+        where : {deptId},
         data : {
             deptName,
         }
-    })
+    });
 }
 
 async function deleteDepartment(deptId){

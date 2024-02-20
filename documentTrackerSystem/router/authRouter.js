@@ -6,6 +6,8 @@ const {check} = require('express-validator');
 const {protectPassword }= require('../middlewares/auth.middleware');
 
 
+const {createStaffUser} = require('../controller/staffController')
+
 // Validation of Input from user for  SignUp
 const validateSignUp = [check('name').notEmpty().withMessage('Should Not be Empty'),
                         check('email').isEmail().withMessage('Email cannot be Empty or invalid'),
@@ -34,6 +36,13 @@ authRouter.post('/forgotPassword', forgotPassword)
 authRouter.post('/resetPassword/:token', protectPassword,  validatePassword, resetPassword)
 
 authRouter.post('/refresh', refreshedUser)
+
+
+
+// Staff EndPoints
+authRouter.post('/staffSignUp', createStaffUser)
+
+
 
 
 

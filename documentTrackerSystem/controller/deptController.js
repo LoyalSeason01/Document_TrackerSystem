@@ -16,8 +16,15 @@ async function updateDepartment(req, res){
 }
 
 async function deleteDepartment(req, res){
-    const deptId =  req.body;
-    return res.status(200).send(await deptModel.deleteDepartment(deptId))
+    const  deptId  = Number(req.body.deptId);
+    
+    const user  = await deptModel.deleteDepartment(deptId);
+
+    if(user.error){
+        return res.status(404).send(user)
+    }
+
+    return res.status(200).send(user);
 }
 
 

@@ -66,12 +66,27 @@ async function getAllStaffs(){
     }
 }
 
-async function updateStaffData(email){
-
+async function updateStaffData(staffNumber){
+    try {
+        return prisma.staff.findUnique({
+            where : {staffNumber,},
+            data  :{
+                staffNumber
+            }
+        });
+    } catch (error) {
+        return error;
+    }
 }
 
-async function deleteStaff(email){
-
+async function deleteStaff(staffNumber){
+  try {
+    return prisma.staff.delete({
+        where : {staffNumber},
+    });
+  } catch (error) {
+    return error
+  }
 }
 
 module.exports = {

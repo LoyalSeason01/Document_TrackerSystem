@@ -14,7 +14,20 @@ async function getAllStaffs(req, res){
     return res.send(await staffModel.getAllStaffs())
 }
 
+async function updateStaff(req, res){
+    const {staffNumber} = req.body;
+    return res.send(await staffModel.updateStaffData(staffNumber))
+}
+
+
+async function deleteStaff(req, res){
+    const {staffNumber} = req.body;
+    return res.send(await staffModel.deleteStaff(staffNumber));
+}
+
 module.exports = {
     createStaffUser,
-    getAllStaffs
+    getAllStaffs,
+    updateStaff,
+    deleteStaff,
 }

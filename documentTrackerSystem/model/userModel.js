@@ -24,7 +24,8 @@ async function getUserById(userId){
             where : {userId},
             include : {
                 division : true,
-                department : true
+                department : true,
+                staff : true
             }
         })
 

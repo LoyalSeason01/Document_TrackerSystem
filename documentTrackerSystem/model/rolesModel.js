@@ -2,24 +2,40 @@ const {PrismaClient} = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-async function getAllRolesAndUsers(){
-    return  {msg : 'Got all Users and Their Roles'}
-}
+async function getAllStaffRoles(){
+    try {
+        const user= prisma.role.findMany({
+            include : {
+                staff : true,
+            }
+        });
+
+        return user
+    } catch (error) {
+        return error
+    }
+    
+};
 
 async function getAUserWithRole(staffNumber){
-   
+   try {
     const staff = await prisma.staff.findUnique({
-        where : {staffNumber}
+        where : {staffNumber},
+        include : {
+            role : true
+        }
     });
 
     if(!staff) {
         return {error : "User Cannot Be found"};
     }
 
-    return await prisma.role.findUnique({
-        where : {staffId : staff.staffId}
-    });
-
+    return staff;
+    
+   } catch (error) {
+    return error;
+   }
+   
 }
 
 
@@ -60,7 +76,7 @@ async function deleteRoleOfUser(){
 }
 
 module.exports = {
-    getAllRolesAndUsers,
+    getAllStaffRoles,
     getAUserWithRole,
     createRoleForUser,
     updateRoleOfUser,

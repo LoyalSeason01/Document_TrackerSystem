@@ -48,7 +48,7 @@ async function signUpUser(req, res){
             const encryptedPassword = await bCrypt.hash(password, salt);
             
             const newUser = await userModel.createUser(name, email, encryptedPassword, division, department);
-          
+        
             if(newUser.error){
                 return res.send(newUser)
             }

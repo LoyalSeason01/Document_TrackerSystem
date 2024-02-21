@@ -2,6 +2,19 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient()
 
+async function getAllStaffs(){
+    try {
+        const staff = await prisma.staff.findMany();
+        return await prisma.user.findMany({
+            where : {
+                userId : staff.userId
+            }
+        });
+    } catch (error) {
+        return error;
+    }
+}
+
 async function createStaffUser(name, email, password, divisionName, deptName, staffNumber){
 
     try {
@@ -47,23 +60,13 @@ async function createStaffUser(name, email, password, divisionName, deptName, st
         }
         
     } catch (error) {
-        return error.meta;
+        if(error.code === 'P2002'){
+            return {error : "Staff Number Already Exist"}
+        }
+        return {error}
     }
 
    
-}
-
-async function getAllStaffs(){
-    try {
-        const staff = await prisma.staff.findMany();
-        return await prisma.user.findMany({
-            where : {
-                userId : staff.userId
-            }
-        });
-    } catch (error) {
-        return error;
-    }
 }
 
 async function updateStaffData(staffNumber, newStaffNumber){

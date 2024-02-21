@@ -12,7 +12,7 @@ async function getAUserWithRole(staffNumber){
         where : {staffNumber}
     });
 
-    if(!found) {
+    if(!staff) {
         return {error : "User Cannot Be found"};
     }
 
@@ -23,17 +23,36 @@ async function getAUserWithRole(staffNumber){
 }
 
 
-async function createRoleForUser(){
-    return await prisma.staff.update({
-        where : {staffNumber},
-        data : {
-            role,
+async function createRoleForUser(staffNumber, role){
+    try {
+        const staff = await prisma.staff.findUnique({
+            where: { staffNumber }
+        });
+        
+        if (!staff) {
+            return { error: 'User Not Found' };
         }
-    })
+
+        const createdRole = await prisma.role.create({
+            data: {
+                role,
+                staff: { connect: { staffId: staff.staffId } }
+            }
+        });
+
+        return createdRole; 
+    } catch (error) {
+
+        if (error.code === 'P2014') {
+            return { error: 'Failed to create role' };
+        }
+        return { error: 'An unexpected error occurred' };
+    }
 }
 
-async function updateRoleOfUser(){
-    return {msg : 'Updated Role of User'}
+
+async function updateRoleOfUser(staffNumber){
+   
 }
 
 async function deleteRoleOfUser(){

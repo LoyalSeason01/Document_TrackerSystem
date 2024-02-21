@@ -12,25 +12,31 @@ async function getAUserWithRole(req, res){
 }
 
 async function createRoleForStaff(req, res){
-    const {staffNumber, role} = req.body;
+
+    try {
+        const {staffNumber, role} = req.body;
     
-    const staffRole = await rolesModel.createRoleForUser(staffNumber, role)
+        const staffRole = await rolesModel.createRoleForUser(staffNumber, role)
+    
+        return res.status(201).send(staffRole);
+    } catch (error) {
+        return error;
+    }
 
-    return res.send(staffRole);
 }
 
-async function updateRoleForStaff(req, res){
-
+async function updateStaffRole(req, res){
+        res.send('Update')
 }
 
-async function deleteRoleForStaff(req, res){
- 
+async function deleteStaffRole(req, res){
+    res.send(req.body)
 }
 
 module.exports = {
     getAllStaffRoles,
     getAUserWithRole,
     createRoleForStaff,
-    updateRoleForStaff,
-    deleteRoleForStaff
+    updateStaffRole,
+    deleteStaffRole,
 }

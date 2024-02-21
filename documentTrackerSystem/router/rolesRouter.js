@@ -1,18 +1,19 @@
 const express = require('express');
 const { isAdmin } = require('../middlewares/roles.middleware');
 const { protect } = require('../middlewares/auth.middleware');
-const { getAllStaffRoles, createRoleForStaff, getAUserWithRole } = require('../controller/rolesController');
+const { getAllStaffRoles, createRoleForStaff, 
+        getAUserWithRole, updateStaffRole, deleteStaffRole } = require('../controller/rolesController');
  
 const roleRouter = express.Router();
 
-roleRouter.get('/role',  getAllStaffRoles);
-roleRouter.get('/role/:staffNumber',  getAUserWithRole);
+roleRouter.get('/role',  protect, getAllStaffRoles);
+roleRouter.get('/role/:staffNumber', protect, isAdmin, getAUserWithRole);
 
-roleRouter.post('/role',  createRoleForStaff);
+roleRouter.post('/role',  protect, isAdmin, createRoleForStaff);
 
-// roleRouter.patch('/staff', protect, isAdmin, updateStaff);
+roleRouter.patch('/role', protect, isAdmin, updateStaffRole);
 
-// roleRouter.delete('/staff', protect, isAdmin, deleteStaff);
+roleRouter.delete('/role', protect, deleteStaffRole);
 
 
 module.exports = roleRouter;

@@ -17,7 +17,8 @@ async function isAdmin(req, res, next){
         return res.status(404).json(found);
     }
 
-    if(found.role === 'Admin'){
+    const role = found.role.role  
+    if( role === 'Admin'){
         next()
     }else{
         return res.status(401).json({error : 'Unauthorized' });
@@ -25,16 +26,7 @@ async function isAdmin(req, res, next){
  
 }
 
-async function isStaff(req, res, next){
-    if(req.body.role === 'Staff'){
-
-    }else{
-
-    }
-}
-
 
 module.exports = {
-    isAdmin,
-    isStaff,
+    isAdmin
 }

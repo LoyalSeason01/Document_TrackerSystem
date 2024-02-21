@@ -23,7 +23,7 @@ model User {
   departmentId String     @db.Uuid
   document    Document[]
   staff       Staff?      
-}
+ }
 
 
 model Staff {

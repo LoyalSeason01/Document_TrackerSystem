@@ -66,12 +66,23 @@ async function getAllStaffs(){
     }
 }
 
-async function updateStaffData(staffNumber){
+async function updateStaffData(staffNumber, newStaffNumber){
     try {
-        return prisma.staff.findUnique({
-            where : {staffNumber,},
-            data  :{
-                staffNumber
+
+        const found = await prisma.staff.findUnique({
+            where : {staffNumber},
+        });
+    
+        if(!found){
+            return {error: 'User Does Not Exist'}
+        }
+
+      return await prisma.staff.update({
+            where: {
+                staffNumber: staffNumber // Use the variable passed to the function
+            },
+            data: {
+                staffNumber: newStaffNumber // Use the variable passed to the function
             }
         });
     } catch (error) {
@@ -81,9 +92,18 @@ async function updateStaffData(staffNumber){
 
 async function deleteStaff(staffNumber){
   try {
+    const found = await prisma.staff.findUnique({
+        where : {staffNumber},
+    });
+
+    if(!found){
+        return {error: 'User Does Not Exist'}
+    }
+
     return prisma.staff.delete({
         where : {staffNumber},
     });
+
   } catch (error) {
     return error
   }

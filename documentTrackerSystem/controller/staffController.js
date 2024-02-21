@@ -2,12 +2,12 @@ const staffModel =  require ('../model/staffModel');
 const bCrypt = require('bcrypt')
 
 async function createStaffUser(req, res){
-        const {name, email, password, department, division, staffNumber} = req.body;
+        const {name, email, password,  division, department, staffNumber} = req.body;
 
         const salt = await bCrypt.genSalt();
         const encryptedPassword = await bCrypt.hash(password, salt);
 
-        return res.send(await staffModel.createStaffUser(name, email, encryptedPassword, department, division, staffNumber))
+        return res.send(await staffModel.createStaffUser(name, email, encryptedPassword, division, department, staffNumber))
 }
 
 async function getAllStaffs(req, res){
@@ -15,8 +15,8 @@ async function getAllStaffs(req, res){
 }
 
 async function updateStaff(req, res){
-    const {staffNumber} = req.body;
-    return res.send(await staffModel.updateStaffData(staffNumber))
+    const {staffNumber, newStaffNumber} = req.body;
+    return res.send(await staffModel.updateStaffData(staffNumber, newStaffNumber))
 }
 
 

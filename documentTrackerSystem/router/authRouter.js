@@ -17,7 +17,7 @@ const validateSignUp = [check('name').notEmpty().withMessage('Should Not be Empt
                     ]
 
 // Validation of Input from user for LogIn
-const validateLogin = [check('email').isEmail().withMessage('Email cannot be Empty or invalid'),
+const validateLogin = [check('email').isEmail().withMessage('Email is invalid'),
                         check('password').notEmpty().withMessage('Password Cannot Not Be Empty')
                     ]
 

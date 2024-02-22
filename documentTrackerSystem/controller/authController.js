@@ -154,6 +154,9 @@ function generateResetToken(id){
 //Function to send a Reset Email Message 
 async function sendResetLink(id, email){
 
+  const accessToken = generateResetToken(id);
+  const resetUrl = `http://localhost:5000/resetPassword/${accessToken}`
+
   const transporter = nodeMailer.createTransport({
     host : process.env.MAILER_HOST,
     port : process.env.MAILER_PORT,
@@ -170,7 +173,15 @@ async function sendResetLink(id, email){
         to: email,
         subject: "Password Reset Link",
         text: "Link",
-        html: '<a href = "http://localhost:5000/"><button style = "background-color : #4CAF50";> Click Me!</button></b>',
+        html: `
+        <p>Click the following link to reset your password:</p>
+        <a href="${resetUrl}">Reset Password</a>
+        <br />
+        <p>Alternatively, you can click the button below:</p>
+        <a href="${resetUrl}">
+          <button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Reset Password</button>
+        </a>
+      `,
     });
 
     return {msg : 'Check Your Email For Verification'};

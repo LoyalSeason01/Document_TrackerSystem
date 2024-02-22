@@ -12,7 +12,6 @@ const updateValidation = [check('name').notEmpty().withMessage('Should Not be Em
                         check('department').notEmpty().withMessage('Department Cannot Not Be Empty'),
                     ]
 
-
 userRouter.get('/user', protect, getUserProfile);
 
 userRouter.patch('/user',  protect, updateValidation, updateUser);

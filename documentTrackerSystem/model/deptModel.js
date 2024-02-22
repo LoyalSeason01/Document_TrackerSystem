@@ -5,7 +5,17 @@ const prisma = new PrismaClient()
 async function getAllDepartment(){
     return prisma.department.findMany({
         include : {
-            user : true
+            user : {
+                select : {
+                    name : true,
+                    email : true,
+                    division : {
+                        select : {
+                            divisionName :  true
+                        }
+                    }
+                }
+            }
         }
     })
 }

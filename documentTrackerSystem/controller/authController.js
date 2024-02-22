@@ -74,12 +74,12 @@ async function forgotPassword(req, res){
   const user = await userModel.getUser(email);
 
   if(!user){
-    return res.status(404).json({error : 'Forbidden'});
+    return res.status(404).json({error : 'User Not Found'});
   }
 
   const accessToken = generateResetToken(user.userId)
-  const resetToken = "/resetPassword/"+accessToken
-  return res.status(200).send(resetToken)
+  const resetUrl = "/resetPassword/"+accessToken
+  return res.status(200).send(resetUrl)
 }
 
 

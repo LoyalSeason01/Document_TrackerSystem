@@ -9,15 +9,15 @@ const {protectPassword }= require('../middlewares/auth.middleware');
 const {createStaffUser} = require('../controller/staffController')
 
 // Validation of Input from user for  SignUp
-const validateSignUp = [check('name').notEmpty().withMessage('Should Not be Empty'),
-                        check('email').isEmail().withMessage('Email cannot be Empty or invalid'),
+const validateSignUp = [check('name').notEmpty().withMessage('Name cannot not be Empty'),
+                        check('email').isEmail().withMessage('Invalid Email'),
                         check('password').notEmpty().withMessage('Password Cannot Not Be Empty'),
                         check('division').notEmpty().withMessage('Division Cannot Not Be Empty'),
                         check('department').notEmpty().withMessage('Department Cannot Not Be Empty'),
                     ]
 
 // Validation of Input from user for LogIn
-const validateLogin = [check('email').isEmail().withMessage('Email is invalid'),
+const validateLogin = [check('email').isEmail().withMessage('Invalid Email'),
                         check('password').notEmpty().withMessage('Password Cannot Not Be Empty')
                     ]
 

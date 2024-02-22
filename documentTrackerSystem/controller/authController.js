@@ -1,5 +1,6 @@
 const userModel = require('../model/userModel');
-const bCrypt = require('bcrypt')
+const bCrypt = require('bcrypt');
+const nodeMailer = require('nodemailer');
 const {validationResult} = require('express-validator')
 const jwt = require('jsonwebtoken');
 
@@ -76,10 +77,15 @@ async function forgotPassword(req, res){
   if(!user){
     return res.status(404).json({error : 'User Not Found'});
   }
+ 
+  const sendEmail  = await sendResetLink(user.userId, email)
+  
+  if(sendEmail.error){
+    return res.status(500).json(sendEmail);
+  }
 
-  const accessToken = generateResetToken(user.userId)
-  const resetUrl = "/resetPassword/"+accessToken
-  return res.status(200).send(resetUrl)
+  return res.send(sendEmail)
+  
 }
 
 
@@ -145,6 +151,37 @@ function generateResetToken(id){
   });
 }
 
+//Function to send a Reset Email Message 
+async function sendResetLink(id, email){
+
+  const transporter = nodeMailer.createTransport({
+    host : process.env.MAILER_HOST,
+    port : process.env.MAILER_PORT,
+    secure : false,
+    auth : {
+      user : process.env.MAILER_USER,
+      pass : process.env.MAILER_PASSWORD,
+    }
+  });
+
+  try {
+    await transporter.sendMail({
+        from: process.env.MAILER_FROM_ADDRESS,
+        to: email,
+        subject: "Password Reset Link",
+        text: "Link",
+        html: '<a href = "http://localhost:5000/"><button style = "background-color : #4CAF50";> Click Me!</button></b>',
+    });
+
+    return {msg : 'Check Your Email For Verification'};
+} catch (error) {
+    if(error.errno === -4077){
+      return {error : "Error occurred while sending email ",}
+    }
+    return {error: 'Failed to send email' };
+}
+
+}
 
 module.exports = {
     logInUser,

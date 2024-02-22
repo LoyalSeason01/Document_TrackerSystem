@@ -6,8 +6,6 @@ async function getAllStaffRoles(req, res){
 
 async function getAUserWithRole(req, res){
     const staffNumber = req.params.staffNumber;
-
-    // res.send(staffNumber)
     return res.send(await rolesModel.getAUserWithRole(staffNumber));
 }
 

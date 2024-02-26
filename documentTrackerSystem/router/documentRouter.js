@@ -8,14 +8,14 @@ const documentRouter = express.Router();
 
 
 
-documentRouter.get('/document',  protect, isAdmin, getAllDocuments);
+documentRouter.get('/document',  protect,  getAllDocuments);
 
-documentRouter.get('/document', protect, isAdmin, getASingleDocument);
+documentRouter.get('/document', protect,  getASingleDocument);
 
-documentRouter.post('/document', protect, isAdmin, createNewDocument);
+documentRouter.post('/document', protect,  createNewDocument);
 
-documentRouter.patch('/document', protect, isAdmin, updateDocument)
+documentRouter.patch('/document', protect,  updateDocument)
 
-documentRouter.delete('/document', protect, isAdmin, deleteDocument);
+documentRouter.delete('/document', protect,  deleteDocument);
 
 module.exports = documentRouter;

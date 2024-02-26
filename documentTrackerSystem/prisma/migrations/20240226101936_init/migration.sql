@@ -78,6 +78,9 @@ CREATE TABLE "Trail" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Staff_staffNumber_key" ON "Staff"("staffNumber");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Staff_userId_key" ON "Staff"("userId");
 
 -- CreateIndex

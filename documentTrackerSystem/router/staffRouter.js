@@ -7,11 +7,11 @@ const staffRouter = express.Router();
 
 staffRouter.get('/staff', protect,  getAllStaffs);
 
-staffRouter.post('/staff', protect, isAdmin, createStaffUser);
+staffRouter.post('/staff', protect,  createStaffUser);
 
-staffRouter.patch('/staff', protect, isAdmin, updateStaff);
+staffRouter.patch('/staff', protect,  updateStaff);
 
-staffRouter.delete('/staff', protect, isAdmin, deleteStaff);
+staffRouter.delete('/staff', protect,  deleteStaff);
 
 
 module.exports = staffRouter;

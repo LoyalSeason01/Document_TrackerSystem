@@ -2,7 +2,7 @@ const express = require('express');
 
 const { getAllDepartments, createDepartment, 
         updateDepartment, deleteDepartment } = require('../controller/deptController');
-const { isAdmin } = require('../middlewares/roles.middleware');
+const { hasPermission } = require('../middlewares/roles.middleware');
 const { protect } = require('../middlewares/auth.middleware');
 
 const deptRouter = express.Router();
@@ -15,12 +15,16 @@ const deptValidation = [
                         check('deptName').notEmpty().withMessage('Should Not be Empty')
                         ]
 
-deptRouter.get('/department',  protect, isAdmin, getAllDepartments);
+const ROLE = {
+        ADMIN : 'Admin',
+        BASIC : 'Basic'
+}
 
-deptRouter.post('/department',  deptValidation, protect, isAdmin, createDepartment);
+deptRouter.get('/department', protect, hasPermission([ROLE.ADMIN, ROLE.BASIC]), getAllDepartments);
+deptRouter.post('/department',  deptValidation, protect, hasPermission([ROLE.ADMIN]),  createDepartment);
 
-deptRouter.patch('/department', deptValidation, protect, isAdmin, updateDepartment);
+deptRouter.patch('/department', deptValidation, protect,  updateDepartment);
 
-deptRouter.delete('/department', deptValidation, protect, isAdmin, isAdmin, deleteDepartment);
+deptRouter.delete('/department', deptValidation, protect,   deleteDepartment);
 
 module.exports = deptRouter;

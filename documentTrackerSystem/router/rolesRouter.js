@@ -7,11 +7,11 @@ const { getAllStaffRoles, createRoleForStaff,
 const roleRouter = express.Router();
 
 roleRouter.get('/role',  protect, getAllStaffRoles);
-roleRouter.get('/role/:staffNumber', protect, isAdmin, getAUserWithRole);
+roleRouter.get('/role/:staffNumber', protect,  getAUserWithRole);
 
-roleRouter.post('/role',  protect, isAdmin, createRoleForStaff);
+roleRouter.post('/role',  protect,  createRoleForStaff);
 
-roleRouter.patch('/role', protect, isAdmin, updateStaffRole);
+roleRouter.patch('/role', protect,  updateStaffRole);
 
 roleRouter.delete('/role', protect, deleteStaffRole);
 

@@ -38,11 +38,12 @@ model Staff {
 
 
 model Role {
-  roleId   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  role     String 
-  staff    Staff @relation(fields: [staffId], references: [staffId])
-  staffId  String @db.Uuid @unique 
+  roleId      String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role        String 
+  staff       Staff       @relation(fields: [staffId], references: [staffId])
+  staffId     String      @db.Uuid @unique 
 }
+
 
 model Division {
   divisionId    String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid

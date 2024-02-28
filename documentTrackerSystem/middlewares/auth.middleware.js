@@ -11,8 +11,10 @@ async function protect(req, res, next) {
 
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            // console.log(decoded.id)
             req.user = await userModel.getUserById(decoded.id);
 
+            
             if(req.user === null){
                 return res.status(404).json({error : 'Forbidden'})
             }

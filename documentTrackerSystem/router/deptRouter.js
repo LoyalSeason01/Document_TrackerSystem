@@ -1,4 +1,5 @@
 const express = require('express');
+const {PERMISSIONS}  = require('../utils/role.permissions')
 
 const { getAllDepartments, createDepartment, 
         updateDepartment, deleteDepartment } = require('../controller/deptController');
@@ -15,16 +16,13 @@ const deptValidation = [
                         check('deptName').notEmpty().withMessage('Should Not be Empty')
                         ]
 
-const ROLE = {
-        ADMIN : 'Admin',
-        BASIC : 'Basic'
-}
+ 
+deptRouter.get('/department', protect, hasPermission([PERMISSIONS.READ]), getAllDepartments);
 
-deptRouter.get('/department', protect, hasPermission([ROLE.ADMIN, ROLE.BASIC]), getAllDepartments);
-deptRouter.post('/department',  deptValidation, protect, hasPermission([ROLE.ADMIN]),  createDepartment);
+deptRouter.post('/department',  deptValidation, protect, hasPermission([PERMISSIONS.CREATE]), createDepartment);
 
-deptRouter.patch('/department', deptValidation, protect,  updateDepartment);
+deptRouter.patch('/department', deptValidation, protect, hasPermission([PERMISSIONS.UPDATE]), updateDepartment);
 
-deptRouter.delete('/department', deptValidation, protect,   deleteDepartment);
+deptRouter.delete('/department', deptValidation, protect, hasPermission([PERMISSIONS.DELETE]),  deleteDepartment);
 
 module.exports = deptRouter;

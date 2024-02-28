@@ -20,10 +20,10 @@ async function updateUser(req, res){
         const {email, divisionId, departmentId} = req.user
 
         //New userDetails
-        const { name, newEmail,  division, department} = req.body
+        const { name, newEmail,  division, department, role} = req.body
     
         
-        return res.send(await userModel.updateUser(email, newEmail,  name,  divisionId, division, departmentId, department ));
+        return res.send(await userModel.updateUser(email, newEmail,  name,  divisionId, division, departmentId, department, role ));
 
         }
 

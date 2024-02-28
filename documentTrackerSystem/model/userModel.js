@@ -8,7 +8,7 @@ async function getUser(email){
 
 
         return await prisma.user.findUnique({
-            where : {email : email}
+            where : {email : email},
         })
                
 
@@ -20,15 +20,23 @@ async function getUser(email){
 async function getUserById(userId){
     try{
 
-        return prisma.user.findUnique({
+        
+        const user = await prisma.user.findUnique({
             where : {userId},
-            include : {
-                division : true,
-                department : true,
-                staff : true
+            select: {
+                userId: true,
+                name: true,
+                email: true,
+                role: true,
             }
+        });
+
+
+        const permissions = await prisma.permissions.findMany({
+            where : {roleId : user.role.roleId}
         })
 
+        return {user, permissions}
     }catch (error){
 
     }

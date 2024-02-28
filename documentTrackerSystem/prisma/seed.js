@@ -1,16 +1,19 @@
 const {PrismaClient} = require('@prisma/client');
 const bCrypt =  require('bcrypt');
 
+const {PERMISSIONS, ROLE} = require('../utils/role.permissions')
+
 const prisma = new PrismaClient();
 
-
-const user = [
+const users = [
     {
         "name": "John Doe",
-        "email": "johndoe@example.com",
+        "email": "johndoe@gmail.com",
         "password": "HiThere",
         "divisionName": "CMC",
         "deptName": "ISU",
+        "role": ROLE.BASIC,
+        "permissions": [PERMISSIONS.READ]
     },
     {
         "name": "Nathaniel",
@@ -19,14 +22,17 @@ const user = [
         "divisionName": "CoCoBod",
         "deptName": "HR",
         "staffNumber": "S12345",
-        "role": "Admin"
+        "role": ROLE.ADMIN,
+        "permissions": [PERMISSIONS.READ, PERMISSIONS.CREATE, PERMISSIONS.UPDATE, PERMISSIONS.DELETE]
     },
     {
         "name": "loyalSeason",
         "email": "loyalseason@gmail.com",
         "password": "HiThere",
         "divisionName": "CocoBod",
-        "deptName": "ISU"
+        "deptName": "ISU",
+        "role": ROLE.BASIC,
+        "permissions": [PERMISSIONS.READ, PERMISSIONS.UPDATE]
     },
     {
         "name": "Emmanuel Asante",
@@ -35,65 +41,74 @@ const user = [
         "divisionName": "CHED",
         "deptName": "IT",
         "staffNumber": "S54321",
-        "role": "Admin"
+        "role": ROLE.ADMIN,
+        "permissions": [PERMISSIONS.READ, PERMISSIONS.CREATE, PERMISSIONS.UPDATE, PERMISSIONS.DELETE]
     },
     {
         "name": "Alice Smith",
-        "email": "alice@example.com",
+        "email": "alice@gmail.com",
         "password": "HiThere",
         "divisionName": "COCOBOD",
         "deptName": "HR",
         "staffNumber": "S98765",
-        "role": "Basic"
+        "role": ROLE.BASIC,
+        "permissions": [PERMISSIONS.READ]
     },
     {
         "name": "Jane Doe",
-        "email": "janedoe@example.com",
+        "email": "janedoe@gmail.com",
         "password": "JaneDoe123",
         "divisionName": "CMC",
-        "deptName": "Finance"
+        "deptName": "Finance",
+        "role": ROLE.BASIC,
+        "permissions": [PERMISSIONS.READ]
     },
     {
         "name": "Bob Johnson",
-        "email": "bob@example.com",
+        "email": "bob@gmail.com",
         "password": "HiThere",
         "divisionName": "CMC",
-        "deptName": "Marketing"
+        "deptName": "Marketing",
+        "role": ROLE.BASIC,
+        "permissions": [PERMISSIONS.READ]
     },
     {
         "name": "Michael Brown",
-        "email": "michael@example.com",
+        "email": "michael@gmail.com",
         "password": "HiThere",
         "divisionName": "CMC",
         "deptName": "IT",
         "staffNumber": "S13579",
-        "role": "Admin"
+        "role": ROLE.ADMIN,
+        "permissions": [PERMISSIONS.READ, PERMISSIONS.CREATE, PERMISSIONS.DELETE]
     },
     {
         "name": "Sarah Williams",
-        "email": "sarah@example.com",
+        "email": "sarah@gmail.com",
         "password": "HiThere",
         "divisionName": "COCOBOD",
-        "deptName": "HR"
+        "deptName": "HR",
+        "role": ROLE.BASIC,
+        "permissions": [PERMISSIONS.READ]
     },
     {
         "name": "David Lee",
-        "email": "davidlee@example.com",
+        "email": "davidlee@gmail.com",
         "password": "LeeDavid789",
         "divisionName": "COCOBOD",
         "deptName": "Marketing",
         "staffNumber": "S24680",
-        "role": "Basic"
+        "role": ROLE.BASIC,
+        "permissions": [PERMISSIONS.READ, PERMISSIONS.CREATE]
     }
 ];
 
 
 async function seedDatabase() {
     try {
-        for (const userData of user) {
-            const { name, email, password, divisionName, deptName, staffNumber, role } = userData;
-           
-           
+        for (const userData of users) {
+            const { name, email, password, divisionName, deptName, staffNumber, role, permissions } = userData;
+
             const salt = await bCrypt.genSalt();
             const encryptedPassword = await bCrypt.hash(password, salt);
 
@@ -110,55 +125,69 @@ async function seedDatabase() {
 
                 const department = await prisma.department.create({
                     data: {
-                        deptName
+                        deptName,
+                        division : {connect : {divisionId : division.divisionId}}
                     }
                 });
 
-                let userCreationData = {
+                const userCreationData = {
                     name,
                     email,
-                    password :  encryptedPassword,
-                    division: { connect: { divisionId: division.divisionId } },
-                    department: { connect: { deptId: department.deptId } }
+                    password: encryptedPassword,
+                    department: { connect: { deptId: department.deptId }  },
+                    division : {connect : {divisionId : division.divisionId}}
                 };
 
                 if (staffNumber) {
-                    // Create the staff member
                     const staff = await prisma.staff.create({
                         data: {
                             user: {
                                 create: userCreationData
                             },
                             staffNumber,
-                            department: { connect: { deptId: department.deptId } }
+                            department: { connect: { deptId: department.deptId },
+                        
+                        }
                         }
                     });
 
                     if (role) {
-                        // Create the role
                         const createdRole = await prisma.role.create({
                             data: {
-                                role: role,
-                                staff: {
-                                    connect: {
-                                        staffId: staff.staffId
-                                    }
-                                }
-                            }
+                                role,
+                                user: { connect: { userId: staff.userId } },                            }
                         });
 
-                        // Assign the created role to the staff member
-                        userCreationData.role = {
-                            connect: {
-                                roleId: createdRole.roleId
-                            }
-                        };
+                        const permissionsData = permissions.map(permission => ({
+                            permission,
+                            roleId: createdRole.roleId
+                        }));
+                    
+                          await prisma.permissions.createMany({
+                            data: permissionsData
+                        });
                     }
                 } else {
-                    // Create a regular user
-                    await prisma.user.create({
+                  const user =  await prisma.user.create({
                         data: userCreationData
                     });
+
+                    if (role) {
+                        const createdRole = await prisma.role.create({
+                            data: {
+                                role,
+                                user: { connect: { userId: user.userId } },                            }
+                        });
+
+                        const permissionsData = permissions.map(permission => ({
+                            permission,
+                            roleId: createdRole.roleId
+                        }));
+                    
+                          await prisma.permissions.createMany({
+                            data: permissionsData
+                        });
+                    }
                 }
             } else {
                 console.log(`User with email ${email} already exists.`);

@@ -5,6 +5,8 @@ const {protect} = require('../middlewares/auth.middleware');
 const userRouter = express.Router();
 
 const {check} = require('express-validator');
+const { hasPermission } = require('../middlewares/roles.middleware');
+const { PERMISSIONS } = require('../utils/role.permissions');
 
 const updateValidation = [check('name').notEmpty().withMessage('Should Not be Empty'),
                         check('newEmail').isEmail().withMessage('Email cannot be Empty or invalid'),
@@ -12,11 +14,11 @@ const updateValidation = [check('name').notEmpty().withMessage('Should Not be Em
                         check('department').notEmpty().withMessage('Department Cannot Not Be Empty'),
                     ]
 
-userRouter.get('/user', protect, getUserProfile);
+userRouter.get('/user', protect, hasPermission([PERMISSIONS.READ]), getUserProfile);
 
-userRouter.patch('/user',  protect, updateValidation, updateUser);
+userRouter.patch('/user',  protect, hasPermission([PERMISSIONS.UPDATE]), updateValidation, updateUser);
 
-userRouter.delete('/user', protect, deleteUser)
+userRouter.delete('/user', protect, hasPermission([PERMISSIONS.DELETE]), deleteUser)
 
 
 

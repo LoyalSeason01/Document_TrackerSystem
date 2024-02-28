@@ -12,6 +12,7 @@ const userRouter = require('./router/userRouter');
 const deptRouter = require('./router/deptRouter');
 const staffRouter = require('./router/staffRouter');
 const roleRouter = require('./router/rolesRouter');
+const documentRouter = require('./router/documentRouter');
 
 //middleWares
 app.use(CORS());
@@ -21,7 +22,8 @@ app.use('/', authRouter);
 app.use('/', userRouter);
 app.use('/', deptRouter);
 app.use('/', staffRouter);
-app.use('/', roleRouter)
+app.use('/', roleRouter);
+app.use('/', documentRouter);
 
 
 

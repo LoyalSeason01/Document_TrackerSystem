@@ -2,78 +2,108 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
   extensions = [pgcrypto]
 }
 
 model User {
-  userId      String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name        String
-  email       String      @unique
-  password    String
-  division    Division    @relation(fields: [divisionId], references: [divisionId])
-  divisionId  String      @db.Uuid
-  department  Department  @relation(fields: [departmentId], references: [deptId])
+  userId       String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  email        String     @unique
+  password     String
+  division     Division   @relation(fields: [divisonId], references: [divisionId])
+  divisonId    String     @db.Uuid
+  department   Department @relation(fields: [departmentId], references: [deptId])
   departmentId String     @db.Uuid
-  document    Document[]
-  staff       Staff?      
- }
+  userDocument userDocument[]
+  document     Document[]
+  staff        Staff?
+  role         Role?
 
+}
 
 model Staff {
-  staffId       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  staffNumber   String @unique
-  user          User   @relation(fields: [userId], references: [userId])
-  userId        String @db.Uuid @unique
-  department    Department  @relation(fields: [departmentId], references: [deptId])
-  departmentId  String @db.Uuid
-  role          Role?
+  staffId      String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  staffNumber  String     @unique
+  user         User       @relation(fields: [userId], references: [userId])
+  userId       String     @unique @db.Uuid
+  department   Department @relation(fields: [departmentId], references: [deptId])
+  departmentId String     @db.Uuid
 }
-
 
 model Role {
-  roleId      String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  role        String 
-  staff       Staff       @relation(fields: [staffId], references: [staffId])
-  staffId     String      @db.Uuid @unique 
+  roleId     String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role       String
+  user       User          @relation(fields: [userId], references: [userId])
+  userId     String        @unique @db.Uuid
+  permission Permissions[]
+  rolePermission rolePermission[]
 }
 
+model Permissions {
+  permissionsId   String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  permission      String
+  role            Role            @relation(fields: [roleId], references: [roleId])
+  roleId          String          @db.Uuid
+  rolePermission  rolePermission[]
+}
 
 model Division {
-  divisionId    String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  divisionName  String
-  user          User[]
+  divisionId   String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  divisionName String
+  department   Department[]
+  user         User[]
 }
 
 model Department {
-  deptId      String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  deptName    String
-  user        User[]
-  staff       Staff[]
+  deptId     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  deptName   String
+  division   Division @relation(fields: [divisionId], references: [divisionId])
+  divisionId String   @db.Uuid
+  user       User[]
+  staff      Staff[]
 }
 
 model Document {
-  docID     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  status    Status   @default(Pending)
-  date      DateTime @default(now())
-  subject   String
-  fileName  String
-  ref       String
-  author    User     @relation(fields: [authorId], references: [userId])
-  authorId  String   @db.Uuid
+  docID        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status       Status   @default(Pending)
+  date         DateTime @default(now())
+  subject      String
+  fileName     String
+  ref          String   @unique
+  user         User     @relation(fields: [userId], references: [userId])
+  userId       String   @db.Uuid
+  userDocId    userDocument[]
 }
 
 model Trail {
-  trailside   String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  sender      Int
-  receiver    Int
-  status      Status   @default(Pending)
+  trailside String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sender    Int
+  receiver  Int
+  status    Status  @default(Pending)
+}
+
+model userDocument {
+  userDocId    String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user         User       @relation(fields: [userId], references: [userId])
+  userId       String     @unique @db.Uuid
+  document     Document   @relation(fields: [docID], references: [docID])
+  docID        String     @unique @db.Uuid
+}
+
+
+model rolePermission {
+  rolePermissionId    String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role                Role          @relation(fields: [roleId], references: [roleId])
+  roleId              String        @unique @db.Uuid
+  permission          Permissions   @relation(fields: [permissionId], references: [permissionsId])
+  permissionId        String        @unique @db.Uuid
 }
 
 enum Status {
@@ -81,11 +111,3 @@ enum Status {
   Forwarded
   Archived
 }
-
-
-
-
-
-
-
-

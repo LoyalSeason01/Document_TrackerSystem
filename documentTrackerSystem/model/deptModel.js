@@ -48,17 +48,20 @@ async function updatedDepartment(deptId, deptName){
     }
 }
 
-async function deleteDepartment(deptId){
+async function deleteDepartment(userId){
 
     try {
-        const found = await prisma.department.findUnique({
-            where : {deptId}
+        
+        const found = await prisma.user.findUnique({
+            where : {userId}
         });
+
+        
 
         if(found){
             try {
                 return prisma.department.delete({
-                    where : {deptId}
+                    where : {deptId : found.departmentId}
                 });
             } catch (error) {
                 return error;
@@ -66,6 +69,7 @@ async function deleteDepartment(deptId){
         }else{
             return {error : 'User Does Not Exist'}
         }  
+
     } catch (error) {
         return error;
     }

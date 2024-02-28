@@ -32,9 +32,11 @@ async function updateDepartment(req, res){
 }
 
 async function deleteDepartment(req, res){
-    const  deptId  = Number(req.body.deptId);
+    const { userId } = req.user.user;
+    console.log(userId)
+
     
-    const user  = await deptModel.deleteDepartment(deptId);
+    const user  = await deptModel.deleteDepartment(userId);
 
     if(user.error){
         return res.status(404).send(user)

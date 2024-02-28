@@ -10,7 +10,7 @@ CREATE TABLE "User" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "divisionId" UUID NOT NULL,
+    "divisonId" UUID NOT NULL,
     "departmentId" UUID NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("userId")
@@ -30,9 +30,18 @@ CREATE TABLE "Staff" (
 CREATE TABLE "Role" (
     "roleId" UUID NOT NULL DEFAULT gen_random_uuid(),
     "role" TEXT NOT NULL,
-    "staffId" UUID NOT NULL,
+    "userId" UUID NOT NULL,
 
     CONSTRAINT "Role_pkey" PRIMARY KEY ("roleId")
+);
+
+-- CreateTable
+CREATE TABLE "Permissions" (
+    "permissionsId" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "permission" TEXT NOT NULL,
+    "roleId" UUID NOT NULL,
+
+    CONSTRAINT "Permissions_pkey" PRIMARY KEY ("permissionsId")
 );
 
 -- CreateTable
@@ -47,6 +56,7 @@ CREATE TABLE "Division" (
 CREATE TABLE "Department" (
     "deptId" UUID NOT NULL DEFAULT gen_random_uuid(),
     "deptName" TEXT NOT NULL,
+    "divisionId" UUID NOT NULL,
 
     CONSTRAINT "Department_pkey" PRIMARY KEY ("deptId")
 );
@@ -59,7 +69,7 @@ CREATE TABLE "Document" (
     "subject" TEXT NOT NULL,
     "fileName" TEXT NOT NULL,
     "ref" TEXT NOT NULL,
-    "authorId" UUID NOT NULL,
+    "userId" UUID NOT NULL,
 
     CONSTRAINT "Document_pkey" PRIMARY KEY ("docID")
 );
@@ -84,10 +94,10 @@ CREATE UNIQUE INDEX "Staff_staffNumber_key" ON "Staff"("staffNumber");
 CREATE UNIQUE INDEX "Staff_userId_key" ON "Staff"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Role_staffId_key" ON "Role"("staffId");
+CREATE UNIQUE INDEX "Role_userId_key" ON "Role"("userId");
 
 -- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_divisionId_fkey" FOREIGN KEY ("divisionId") REFERENCES "Division"("divisionId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "User" ADD CONSTRAINT "User_divisonId_fkey" FOREIGN KEY ("divisonId") REFERENCES "Division"("divisionId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("deptId") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -99,7 +109,13 @@ ALTER TABLE "Staff" ADD CONSTRAINT "Staff_userId_fkey" FOREIGN KEY ("userId") RE
 ALTER TABLE "Staff" ADD CONSTRAINT "Staff_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("deptId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Role" ADD CONSTRAINT "Role_staffId_fkey" FOREIGN KEY ("staffId") REFERENCES "Staff"("staffId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Role" ADD CONSTRAINT "Role_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Document" ADD CONSTRAINT "Document_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Permissions" ADD CONSTRAINT "Permissions_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role"("roleId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Department" ADD CONSTRAINT "Department_divisionId_fkey" FOREIGN KEY ("divisionId") REFERENCES "Division"("divisionId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Document" ADD CONSTRAINT "Document_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;

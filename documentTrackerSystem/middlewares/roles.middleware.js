@@ -10,13 +10,14 @@ function hasPermission(permissions) {
         }
 
         const userPermissions = [];
-        req.user.permissions.forEach(permission => {
+
+        req.user.role.permissions.forEach(permission => {
             userPermissions.push(permission.permission);
         });
       
 
         if (!permissions.some(permission => userPermissions.includes(permission))) {
-            return res.status(401).json({ error: 'Unauthorized' });
+            return res.status(403).json({ error: 'Forbidden' });
         }
 
         next();

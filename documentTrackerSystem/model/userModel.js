@@ -1,19 +1,22 @@
 const { PrismaClient } = require('@prisma/client');
 
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 async function getUser(email){
     try {
 
-
         return await prisma.user.findUnique({
             where : {email : email},
-        })
-               
+        })        
 
     } catch (error) {
-        return error;
+        return { 
+            error: {
+                message: error.message || "An error occurred",
+                name: error.name || "UnknownError"
+            } 
+        };
     }
 }
 
@@ -27,18 +30,40 @@ async function getUserById(userId){
                 userId: true,
                 name: true,
                 email: true,
-                role: true,
+                role : true,
+                division: true,
+                department : true,
             }
         });
+
+        if(!user){
+            return {error : "User Not Found"}
+        }
 
 
         const permissions = await prisma.permissions.findMany({
             where : {roleId : user.role.roleId}
         })
 
-        return {user, permissions}
-    }catch (error){
+        return {
+                userId,
+                name : user.name,
+                email : user.email,
+                division : user.division.divisionName,
+                department : user.department.departmentName,
+                role  : {
+                    role: user.role.role,
+                    permissions: permissions.map(permissions => permissions.permission)
+                },
+             }
 
+    }catch (error){
+        return { 
+            error: {
+                message: error.message || "An error occurred",
+                name: error.name || "UnknownError"
+            } 
+        };
     }
 }
 
@@ -81,50 +106,73 @@ async function createUser(name, email, password, divisionName, deptName){
         }     
 
         } catch (error) {
-            return error;
+            return { 
+                error: {
+                    message: error.message || "An error occurred",
+                    name: error.name || "UnknownError"
+                } 
+            };
         }
 
 }
 
-async function updateUser(email, newEmail, name,  divisionId, divisionName, deptId, deptName ){
+async function updateUser(name, email, division, department, role, userId){
     try {
              // Check if the user exists
              const foundUser = await prisma.user.findUnique({
-                where: { email }
+                where: { userId }
             });
     
             if (!foundUser) {
-                throw new Error('User not found');
+                return {error : "User Not Found"}
             }
-    
-            // Update the division
-            const updatedDivision = await prisma.division.update({
-                where: { divisionId },
-                data: { divisionName }
-            });
-    
-            // Update the department
-            const updatedDepartment = await prisma.department.update({
-                where: { deptId },
-                data: { deptName }
-            });
-    
-            // Update the user
-            const updatedUser = await prisma.user.update({
-                where: { email },
-                data: {
-                    name,
-                    email: newEmail,
-                    division: { connect: { divisionId: updatedDivision.divisionId } },
-                    department: { connect: { deptId: updatedDepartment.deptId } }
+          
+
+            const updateDepartment = await prisma.department.update({
+                where : {departmentId : foundUser.departmentId},
+                data : {
+                    departmentName : department
                 }
             });
-    
-            return {updatedUser, updatedDivision, updatedDepartment};
- 
-        
+
+            const updateDivision = await prisma.division.update({
+                where : {divisionId : foundUser.divisionId},
+                data : {
+                    divisionName : division
+                }
+            });
+
+            const updatedRole = await prisma.role.update({
+                where : {userId},
+                data : {
+                    role
+                }
+            });
+
+            const updatedUser = await prisma.user.update({
+                where : {userId},
+                data : {
+                    name,
+                    email,
+                    division : {connect : {divisionId : updateDivision.divisionId}},
+                    department : {connect : {departmentId : updateDepartment.departmentId}}
+                }
+            });
+               
+            return {name : updateUser.name,
+                    email : updatedUser.email,
+                    division : updateDivision.divisionName,
+                    department : updateDepartment.departmentName,
+                    role       : updatedRole.role
+                }
+
     } catch (error) {
-        return error;
+        return { 
+            error: {
+                message: error.message || "An error occurred",
+                name: error.name || "UnknownError"
+            } 
+        };
     }
 }
 
@@ -151,26 +199,35 @@ async function resetPassword(email, password){
 
    
 } catch (error) {
-   return error;
+    return { 
+        error: {
+            message: error.message || "An error occurred",
+            name: error.name || "UnknownError"
+        } 
+    };
 }
     
 }
 
 async function deleteUser(email){
     try {
-        const foundEmail = await prisma.user.findMany({
+        const foundEmail = await prisma.user.findUnique({
             where : {email,}
         });
 
-        if(foundEmail.length === 1){
-            return prisma.user.delete({
-                where : {email : email}
-            })
-        }else{
+        if(!foundEmail){
             return {error : 'User Not Found'}
         }
-    } catch (error) {
+
         
+
+        return await prisma.user.delete({
+            where : {email}
+        });
+
+
+    } catch (error) {
+        return {error : error.message};
     }
 }
 

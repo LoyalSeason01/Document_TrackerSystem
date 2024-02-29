@@ -9,16 +9,17 @@ const { hasPermission } = require('../middlewares/roles.middleware');
 const { PERMISSIONS } = require('../utils/role.permissions');
 
 const updateValidation = [check('name').notEmpty().withMessage('Should Not be Empty'),
-                        check('newEmail').isEmail().withMessage('Email cannot be Empty or invalid'),
+                        check('email').isEmail().withMessage('Email cannot be Empty or invalid'),
                         check('division').notEmpty().withMessage('Division Cannot Not Be Empty'),
                         check('department').notEmpty().withMessage('Department Cannot Not Be Empty'),
+                        check('role').notEmpty().withMessage('Role Cannot Not Be Empty'),
                     ]
 
-userRouter.get('/user', protect, hasPermission([PERMISSIONS.READ]), getUserProfile);
+userRouter.get('/user', protect,  getUserProfile);
 
-userRouter.patch('/user',  protect, hasPermission([PERMISSIONS.UPDATE]), updateValidation, updateUser);
+userRouter.patch('/user',  protect,  updateValidation, updateUser);
 
-userRouter.delete('/user', protect, hasPermission([PERMISSIONS.DELETE]), deleteUser)
+userRouter.delete('/user', protect,  deleteUser)
 
 
 

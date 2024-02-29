@@ -1,7 +1,7 @@
 const {PrismaClient} = require('@prisma/client');
 const bCrypt =  require('bcrypt');
 
-const {PERMISSIONS, ROLE} = require('../utils/role.permissions')
+const {PERMISSIONS} = require('../utils/role.permissions')
 
 const prisma = new PrismaClient();
 
@@ -11,8 +11,8 @@ const users = [
         "email": "johndoe@gmail.com",
         "password": "HiThere",
         "divisionName": "CMC",
-        "deptName": "ISU",
-        "role": ROLE.BASIC,
+        "departmentName": "ISU",
+        "role": "User",
         "permissions": [PERMISSIONS.READ]
     },
     {
@@ -20,9 +20,9 @@ const users = [
         "email": "simplebrookes01@gmail.com",
         "password": "HiThere",
         "divisionName": "CoCoBod",
-        "deptName": "HR",
+        "departmentName": "HR",
         "staffNumber": "S12345",
-        "role": ROLE.ADMIN,
+        "role": "Admin",
         "permissions": [PERMISSIONS.READ, PERMISSIONS.CREATE, PERMISSIONS.UPDATE, PERMISSIONS.DELETE]
     },
     {
@@ -30,8 +30,8 @@ const users = [
         "email": "loyalseason@gmail.com",
         "password": "HiThere",
         "divisionName": "CocoBod",
-        "deptName": "ISU",
-        "role": ROLE.BASIC,
+        "departmentName": "ISU",
+        "role": "User",
         "permissions": [PERMISSIONS.READ, PERMISSIONS.UPDATE]
     },
     {
@@ -39,9 +39,9 @@ const users = [
         "email": "easante658@gmail.com",
         "password": "HiThere",
         "divisionName": "CHED",
-        "deptName": "IT",
+        "departmentName": "IT",
         "staffNumber": "S54321",
-        "role": ROLE.ADMIN,
+        "role": "Admin",
         "permissions": [PERMISSIONS.READ, PERMISSIONS.CREATE, PERMISSIONS.UPDATE, PERMISSIONS.DELETE]
     },
     {
@@ -49,9 +49,9 @@ const users = [
         "email": "alice@gmail.com",
         "password": "HiThere",
         "divisionName": "COCOBOD",
-        "deptName": "HR",
+        "departmentName": "HR",
         "staffNumber": "S98765",
-        "role": ROLE.BASIC,
+        "role": "User",
         "permissions": [PERMISSIONS.READ]
     },
     {
@@ -59,8 +59,8 @@ const users = [
         "email": "janedoe@gmail.com",
         "password": "JaneDoe123",
         "divisionName": "CMC",
-        "deptName": "Finance",
-        "role": ROLE.BASIC,
+        "departmentName": "Finance",
+        "role": "User",
         "permissions": [PERMISSIONS.READ]
     },
     {
@@ -68,8 +68,8 @@ const users = [
         "email": "bob@gmail.com",
         "password": "HiThere",
         "divisionName": "CMC",
-        "deptName": "Marketing",
-        "role": ROLE.BASIC,
+        "departmentName": "Marketing",
+        "role": "User",
         "permissions": [PERMISSIONS.READ]
     },
     {
@@ -77,9 +77,9 @@ const users = [
         "email": "michael@gmail.com",
         "password": "HiThere",
         "divisionName": "CMC",
-        "deptName": "IT",
+        "departmentName": "IT",
         "staffNumber": "S13579",
-        "role": ROLE.ADMIN,
+        "role": "Admin",
         "permissions": [PERMISSIONS.READ, PERMISSIONS.CREATE, PERMISSIONS.DELETE]
     },
     {
@@ -87,8 +87,8 @@ const users = [
         "email": "sarah@gmail.com",
         "password": "HiThere",
         "divisionName": "COCOBOD",
-        "deptName": "HR",
-        "role": ROLE.BASIC,
+        "departmentName": "HR",
+        "role": "User",
         "permissions": [PERMISSIONS.READ]
     },
     {
@@ -96,9 +96,9 @@ const users = [
         "email": "davidlee@gmail.com",
         "password": "LeeDavid789",
         "divisionName": "COCOBOD",
-        "deptName": "Marketing",
+        "departmentName": "Marketing",
         "staffNumber": "S24680",
-        "role": ROLE.BASIC,
+        "role": "User",
         "permissions": [PERMISSIONS.READ, PERMISSIONS.CREATE]
     }
 ];
@@ -107,7 +107,7 @@ const users = [
 async function seedDatabase() {
     try {
         for (const userData of users) {
-            const { name, email, password, divisionName, deptName, staffNumber, role, permissions } = userData;
+            const { name, email, password, divisionName, departmentName, staffNumber, role, permissions } = userData;
 
             const salt = await bCrypt.genSalt();
             const encryptedPassword = await bCrypt.hash(password, salt);
@@ -125,7 +125,7 @@ async function seedDatabase() {
 
                 const department = await prisma.department.create({
                     data: {
-                        deptName,
+                        departmentName,
                         division : {connect : {divisionId : division.divisionId}}
                     }
                 });
@@ -134,7 +134,7 @@ async function seedDatabase() {
                     name,
                     email,
                     password: encryptedPassword,
-                    department: { connect: { deptId: department.deptId }  },
+                    department: { connect: { departmentId: department.departmentId }  },
                     division : {connect : {divisionId : division.divisionId}}
                 };
 
@@ -145,7 +145,7 @@ async function seedDatabase() {
                                 create: userCreationData
                             },
                             staffNumber,
-                            department: { connect: { deptId: department.deptId },
+                            department: { connect: { departmentId: department.departmentId },
                         
                         }
                         }

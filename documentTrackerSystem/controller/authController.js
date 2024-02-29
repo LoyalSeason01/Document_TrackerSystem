@@ -8,7 +8,6 @@ const jwt = require('jsonwebtoken');
 async function logInUser(req, res){
 
     const {email, password} = req.body;
-   
      const error = validationResult(req);
     
     if(!error.isEmpty()){
@@ -22,7 +21,7 @@ async function logInUser(req, res){
         if(auth){
             res.cookie('refreshToken', refreshToken(user.userId), {httpOnly: true, sameSite : 'strict'});
             res.cookie('token', generateToken(user.userId), {httpOnly: true, sameSite : 'strict'});
-          return res.status(200).json({
+            return res.status(200).json({
             token : generateToken(user.userId),
           });
         }else{

@@ -1,5 +1,3 @@
-const { getAUserWithRole } = require('../model/rolesModel');
-
 
 function hasPermission(permissions) {
     return async (req, res, next) => {
@@ -9,13 +7,14 @@ function hasPermission(permissions) {
             console.log(req.user)
         }
 
+        
         const userPermissions = [];
 
         req.user.role.permissions.forEach(permission => {
-            userPermissions.push(permission.permission);
+            userPermissions.push(permission);
         });
-      
-
+        
+       
         if (!permissions.some(permission => userPermissions.includes(permission))) {
             return res.status(403).json({ error: 'Forbidden' });
         }

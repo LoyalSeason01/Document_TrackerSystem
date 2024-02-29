@@ -6,13 +6,13 @@ const { PERMISSIONS } = require('../utils/role.permissions');
 
 const staffRouter = express.Router();
 
-staffRouter.get('/staff', protect, hasPermission([PERMISSIONS.READ]),  getAllStaffs);
+staffRouter.get('/staff', protect, hasPermission([PERMISSIONS.READ_STAFF]),  getAllStaffs);
 
-staffRouter.post('/staff', protect,  hasPermission([PERMISSIONS.CREATE]), createStaffUser);
+staffRouter.post('/staff', protect,  hasPermission([PERMISSIONS.CREATE_STAFF]), createStaffUser);
 
-staffRouter.patch('/staff', protect, hasPermission([PERMISSIONS.UPDATE]),  updateStaff);
+staffRouter.patch('/staff', protect, hasPermission([PERMISSIONS.UPDATE_STAFF]),  updateStaff);
 
-staffRouter.delete('/staff', protect, hasPermission([PERMISSIONS.DELETE]),  deleteStaff);
+staffRouter.delete('/staff', protect, hasPermission([PERMISSIONS.DELETE_STAFF]),  deleteStaff);
 
 
 module.exports = staffRouter;

@@ -15,11 +15,11 @@ const updateValidation = [check('name').notEmpty().withMessage('Should Not be Em
                         check('role').notEmpty().withMessage('Role Cannot Not Be Empty'),
                     ]
 
-userRouter.get('/user', protect,  getUserProfile);
+userRouter.get('/user', protect, hasPermission([PERMISSIONS.READ_USER]), getUserProfile);
 
-userRouter.patch('/user',  protect,  updateValidation, updateUser);
+userRouter.patch('/user',  protect, hasPermission([PERMISSIONS.UPDATE_USER]),  updateValidation, updateUser);
 
-userRouter.delete('/user', protect,  deleteUser)
+userRouter.delete('/user', protect, hasPermission([PERMISSIONS.DELETE_USER]),  deleteUser)
 
 
 

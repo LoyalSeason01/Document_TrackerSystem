@@ -18,32 +18,31 @@ model User {
   email        String     @unique
   password     String
   division     Division   @relation(fields: [divisionId], references: [divisionId])
-  divisionId    String     @db.Uuid
+  divisionId   String     @db.Uuid
   department   Department @relation(fields: [departmentId], references: [departmentId])
   departmentId String     @db.Uuid
   userDocument userDocument[]
   document     Document[]
-  staff        Staff?
-  role         Role?
-
+  staff        Staff?     @relation(fields: [staffId], references: [staffId], onDelete: Cascade)
+  staffId      String?    @db.Uuid  
+  role         Role?      @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
+  roleId       String?    @db.Uuid
 }
 
 model Staff {
   staffId      String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   staffNumber  String     @unique
-  user         User       @relation(fields: [userId], references: [userId])
-  userId       String     @unique @db.Uuid
+  user         User[]        
   department   Department @relation(fields: [departmentId], references: [departmentId])
   departmentId String     @db.Uuid
 }
 
 model Role {
-  roleId     String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  role       String
-  user       User          @relation(fields: [userId], references: [userId])
-  userId     String        @unique @db.Uuid
-  permission Permissions[]
-  rolePermission rolePermission[]
+  roleId           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role             String
+  user             User[]          
+  permission       Permissions[]
+  rolePermission   rolePermission[] 
 }
 
 model Permissions {

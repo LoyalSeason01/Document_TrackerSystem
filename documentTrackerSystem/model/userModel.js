@@ -118,32 +118,32 @@ async function createUser(name, email, password, divisionName, deptName){
 
 async function updateUser(name, email, division, department, role, userId){
     try {
-             // Check if the user exists
-             const foundUser = await prisma.user.findUnique({
+             const user = await prisma.user.findUnique({
                 where: { userId }
             });
     
-            if (!foundUser) {
+            if (!user) {
                 return {error : "User Not Found"}
             }
           
+          
 
             const updateDepartment = await prisma.department.update({
-                where : {departmentId : foundUser.departmentId},
+                where : {departmentId : user.departmentId},
                 data : {
                     departmentName : department
                 }
             });
 
             const updateDivision = await prisma.division.update({
-                where : {divisionId : foundUser.divisionId},
+                where : {divisionId : user.divisionId},
                 data : {
                     divisionName : division
                 }
             });
 
             const updatedRole = await prisma.role.update({
-                where : {userId},
+                where : {roleId : user.roleId},
                 data : {
                     role
                 }
@@ -159,7 +159,7 @@ async function updateUser(name, email, division, department, role, userId){
                 }
             });
                
-            return {name : updateUser.name,
+            return {name : updatedUser.name,
                     email : updatedUser.email,
                     division : updateDivision.divisionName,
                     department : updateDepartment.departmentName,

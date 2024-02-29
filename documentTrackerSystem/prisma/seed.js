@@ -1,7 +1,8 @@
 const {PrismaClient} = require('@prisma/client');
 const bCrypt =  require('bcrypt');
 
-const {PERMISSIONS} = require('../utils/role.permissions')
+const {PERMISSIONS} = require('../utils/role.permissions');
+const { connect } = require('../router/userRouter');
 
 const prisma = new PrismaClient();
 
@@ -13,7 +14,21 @@ const users = [
         "divisionName": "CMC",
         "departmentName": "ISU",
         "role": "User",
-        "permissions": [PERMISSIONS.READ]
+        "permissions": [
+                        PERMISSIONS.READ_USER, 
+                        PERMISSIONS.UPDATE_USER,
+
+                        PERMISSIONS.READ_DEPT,
+
+                        PERMISSIONS.READ_DOCUMENT,
+                        PERMISSIONS.CREATE_DOCUMENT,
+                        PERMISSIONS.UPDATE_DOCUMENT,
+                        PERMISSIONS.DELETE_DOCUMENT,
+
+                        PERMISSIONS.READ_ROLES,
+
+                        PERMISSIONS.READ_STAFF,
+                    ]
     },
     {
         "name": "Nathaniel",
@@ -23,7 +38,32 @@ const users = [
         "departmentName": "HR",
         "staffNumber": "S12345",
         "role": "Admin",
-        "permissions": [PERMISSIONS.READ, PERMISSIONS.CREATE, PERMISSIONS.UPDATE, PERMISSIONS.DELETE]
+        "permissions": [
+                        PERMISSIONS.READ_USER, 
+                        PERMISSIONS.CREATE_USER, 
+                        PERMISSIONS.UPDATE_USER,
+                        PERMISSIONS.DELETE_USER,
+
+                        PERMISSIONS.READ_DEPT,
+                        PERMISSIONS.CREATE_DEPT,
+                        PERMISSIONS.UPDATE_DEPT,
+                        PERMISSIONS.DELETE_DEPT,
+
+                        PERMISSIONS.READ_DOCUMENT,
+                        PERMISSIONS.CREATE_DOCUMENT,
+                        PERMISSIONS.UPDATE_DOCUMENT,
+                        PERMISSIONS.DELETE_DOCUMENT,
+
+                        PERMISSIONS.READ_ROLES,
+                        PERMISSIONS.CREATE_ROLES,
+                        PERMISSIONS.UPDATE_ROLES,
+                        PERMISSIONS.DELETE_ROLES,
+
+                        PERMISSIONS.READ_STAFF,
+                        PERMISSIONS.CREATE_STAFF,
+                        PERMISSIONS.UPDATE_STAFF,
+                        PERMISSIONS.DELETE_STAFF,
+                  ]
     },
     {
         "name": "loyalSeason",
@@ -32,7 +72,21 @@ const users = [
         "divisionName": "CocoBod",
         "departmentName": "ISU",
         "role": "User",
-        "permissions": [PERMISSIONS.READ, PERMISSIONS.UPDATE]
+        "permissions": [  
+                          PERMISSIONS.READ_USER, 
+                          PERMISSIONS.UPDATE_USER,
+
+                          PERMISSIONS.READ_DEPT,
+
+                          PERMISSIONS.READ_DOCUMENT,
+                          PERMISSIONS.CREATE_DOCUMENT,
+                          PERMISSIONS.UPDATE_DOCUMENT,
+                          PERMISSIONS.DELETE_DOCUMENT,
+
+                          PERMISSIONS.READ_ROLES,
+
+                          PERMISSIONS.READ_STAFF,
+                        ]
     },
     {
         "name": "Emmanuel Asante",
@@ -42,7 +96,32 @@ const users = [
         "departmentName": "IT",
         "staffNumber": "S54321",
         "role": "Admin",
-        "permissions": [PERMISSIONS.READ, PERMISSIONS.CREATE, PERMISSIONS.UPDATE, PERMISSIONS.DELETE]
+        "permissions": [
+            PERMISSIONS.READ_USER, 
+            PERMISSIONS.CREATE_USER, 
+            PERMISSIONS.UPDATE_USER,
+            PERMISSIONS.DELETE_USER,
+
+            PERMISSIONS.READ_DEPT,
+            PERMISSIONS.CREATE_DEPT,
+            PERMISSIONS.UPDATE_DEPT,
+            PERMISSIONS.DELETE_DEPT,
+
+            PERMISSIONS.READ_DOCUMENT,
+            PERMISSIONS.CREATE_DOCUMENT,
+            PERMISSIONS.UPDATE_DOCUMENT,
+            PERMISSIONS.DELETE_DOCUMENT,
+
+            PERMISSIONS.READ_ROLES,
+            PERMISSIONS.CREATE_ROLES,
+            PERMISSIONS.UPDATE_ROLES,
+            PERMISSIONS.DELETE_ROLES,
+
+            PERMISSIONS.READ_STAFF,
+            PERMISSIONS.CREATE_STAFF,
+            PERMISSIONS.UPDATE_STAFF,
+            PERMISSIONS.DELETE_STAFF,
+      ]
     },
     {
         "name": "Alice Smith",
@@ -52,7 +131,21 @@ const users = [
         "departmentName": "HR",
         "staffNumber": "S98765",
         "role": "User",
-        "permissions": [PERMISSIONS.READ]
+        "permissions":  [  
+                        PERMISSIONS.READ_USER, 
+                        PERMISSIONS.UPDATE_USER,
+
+                        PERMISSIONS.READ_DEPT,
+
+                        PERMISSIONS.READ_DOCUMENT,
+                        PERMISSIONS.CREATE_DOCUMENT,
+                        PERMISSIONS.UPDATE_DOCUMENT,
+                        PERMISSIONS.DELETE_DOCUMENT,
+
+                        PERMISSIONS.READ_ROLES,
+
+                        PERMISSIONS.READ_STAFF,
+                    ]
     },
     {
         "name": "Jane Doe",
@@ -61,7 +154,21 @@ const users = [
         "divisionName": "CMC",
         "departmentName": "Finance",
         "role": "User",
-        "permissions": [PERMISSIONS.READ]
+        "permissions":  [  
+                            PERMISSIONS.READ_USER, 
+                            PERMISSIONS.UPDATE_USER,
+
+                            PERMISSIONS.READ_DEPT,
+
+                            PERMISSIONS.READ_DOCUMENT,
+                            PERMISSIONS.CREATE_DOCUMENT,
+                            PERMISSIONS.UPDATE_DOCUMENT,
+                            PERMISSIONS.DELETE_DOCUMENT,
+
+                            PERMISSIONS.READ_ROLES,
+
+                            PERMISSIONS.READ_STAFF,
+                        ]
     },
     {
         "name": "Bob Johnson",
@@ -70,7 +177,21 @@ const users = [
         "divisionName": "CMC",
         "departmentName": "Marketing",
         "role": "User",
-        "permissions": [PERMISSIONS.READ]
+        "permissions":  [  
+                            PERMISSIONS.READ_USER, 
+                            PERMISSIONS.UPDATE_USER,
+
+                            PERMISSIONS.READ_DEPT,
+
+                            PERMISSIONS.READ_DOCUMENT,
+                            PERMISSIONS.CREATE_DOCUMENT,
+                            PERMISSIONS.UPDATE_DOCUMENT,
+                            PERMISSIONS.DELETE_DOCUMENT,
+
+                            PERMISSIONS.READ_ROLES,
+
+                            PERMISSIONS.READ_STAFF,
+                        ]
     },
     {
         "name": "Michael Brown",
@@ -80,7 +201,32 @@ const users = [
         "departmentName": "IT",
         "staffNumber": "S13579",
         "role": "Admin",
-        "permissions": [PERMISSIONS.READ, PERMISSIONS.CREATE, PERMISSIONS.DELETE]
+        "permissions":  [
+                            PERMISSIONS.READ_USER, 
+                            PERMISSIONS.CREATE_USER, 
+                            PERMISSIONS.UPDATE_USER,
+                            PERMISSIONS.DELETE_USER,
+
+                            PERMISSIONS.READ_DEPT,
+                            PERMISSIONS.CREATE_DEPT,
+                            PERMISSIONS.UPDATE_DEPT,
+                            PERMISSIONS.DELETE_DEPT,
+
+                            PERMISSIONS.READ_DOCUMENT,
+                            PERMISSIONS.CREATE_DOCUMENT,
+                            PERMISSIONS.UPDATE_DOCUMENT,
+                            PERMISSIONS.DELETE_DOCUMENT,
+
+                            PERMISSIONS.READ_ROLES,
+                            PERMISSIONS.CREATE_ROLES,
+                            PERMISSIONS.UPDATE_ROLES,
+                            PERMISSIONS.DELETE_ROLES,
+
+                            PERMISSIONS.READ_STAFF,
+                            PERMISSIONS.CREATE_STAFF,
+                            PERMISSIONS.UPDATE_STAFF,
+                            PERMISSIONS.DELETE_STAFF,
+                        ]
     },
     {
         "name": "Sarah Williams",
@@ -89,7 +235,21 @@ const users = [
         "divisionName": "COCOBOD",
         "departmentName": "HR",
         "role": "User",
-        "permissions": [PERMISSIONS.READ]
+        "permissions":  [  
+                            PERMISSIONS.READ_USER, 
+                            PERMISSIONS.UPDATE_USER,
+
+                            PERMISSIONS.READ_DEPT,
+
+                            PERMISSIONS.READ_DOCUMENT,
+                            PERMISSIONS.CREATE_DOCUMENT,
+                            PERMISSIONS.UPDATE_DOCUMENT,
+                            PERMISSIONS.DELETE_DOCUMENT,
+
+                            PERMISSIONS.READ_ROLES,
+
+                            PERMISSIONS.READ_STAFF,
+                    ]
     },
     {
         "name": "David Lee",
@@ -99,7 +259,21 @@ const users = [
         "departmentName": "Marketing",
         "staffNumber": "S24680",
         "role": "User",
-        "permissions": [PERMISSIONS.READ, PERMISSIONS.CREATE]
+        "permissions":  [  
+                            PERMISSIONS.READ_USER, 
+                            PERMISSIONS.UPDATE_USER,
+
+                            PERMISSIONS.READ_DEPT,
+
+                            PERMISSIONS.READ_DOCUMENT,
+                            PERMISSIONS.CREATE_DOCUMENT,
+                            PERMISSIONS.UPDATE_DOCUMENT,
+                            PERMISSIONS.DELETE_DOCUMENT,
+
+                            PERMISSIONS.READ_ROLES,
+
+                            PERMISSIONS.READ_STAFF,
+                    ]
     }
 ];
 
@@ -139,11 +313,14 @@ async function seedDatabase() {
                 };
 
                 if (staffNumber) {
+
+                    const user =  await prisma.user.create({
+                        data: userCreationData
+                    });
+
                     const staff = await prisma.staff.create({
                         data: {
-                            user: {
-                                create: userCreationData
-                            },
+                            user : {connect : {userId : user.userId}},
                             staffNumber,
                             department: { connect: { departmentId: department.departmentId },
                         
@@ -151,11 +328,12 @@ async function seedDatabase() {
                         }
                     });
 
+
                     if (role) {
                         const createdRole = await prisma.role.create({
                             data: {
                                 role,
-                                user: { connect: { userId: staff.userId } },                            }
+                                user: { connect: { userId: user.userId } },                            }
                         });
 
                         const permissionsData = permissions.map(permission => ({
@@ -172,13 +350,14 @@ async function seedDatabase() {
                         data: userCreationData
                     });
 
+
                     if (role) {
                         const createdRole = await prisma.role.create({
                             data: {
                                 role,
-                                user: { connect: { userId: user.userId } },                            }
-                        });
-
+                                user : {connect : {userId : user.userId}}
+                            }
+                        })
                         const permissionsData = permissions.map(permission => ({
                             permission,
                             roleId: createdRole.roleId

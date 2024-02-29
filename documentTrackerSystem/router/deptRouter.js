@@ -17,12 +17,12 @@ const deptValidation = [
                         ]
 
  
-deptRouter.get('/department', protect, hasPermission([PERMISSIONS.READ]), getAllDepartments);
+deptRouter.get('/department', protect, hasPermission([PERMISSIONS.READ_DEPT]), getAllDepartments);
 
-deptRouter.post('/department',  deptValidation, protect, hasPermission([PERMISSIONS.CREATE]), createDepartment);
+deptRouter.post('/department',  deptValidation, protect, hasPermission([PERMISSIONS.CREATE_DEPT]), createDepartment);
 
-deptRouter.patch('/department', deptValidation, protect, hasPermission([PERMISSIONS.UPDATE]), updateDepartment);
+deptRouter.patch('/department', deptValidation, protect, hasPermission([PERMISSIONS.UPDATE_DEPT]), updateDepartment);
 
-deptRouter.delete('/department', deptValidation, protect, hasPermission([PERMISSIONS.DELETE]),  deleteDepartment);
+deptRouter.delete('/department', deptValidation, protect, hasPermission([PERMISSIONS.DELETE_DEPT]),  deleteDepartment);
 
 module.exports = deptRouter;

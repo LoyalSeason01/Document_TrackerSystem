@@ -3,22 +3,26 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient()
 
 async function getAllDepartment(){
-    return prisma.department.findMany({
-        include : {
-            user : {
-                select : {
-                    name : true,
-                    email : true,
-                    division : {
-                        select : {
-                            divisionName :  true
-                        }
+        const user = await prisma.user.findMany({
+            select : {
+                name : true,
+                email : true,
+                division : {
+                    select : {
+                        divisionName : true
+                    }
+                },
+                department : {
+                    select : {
+                        departmentName : true
                     }
                 }
             }
-        }
-    })
+        })
+    
+    return user;
 }
+
 
 async function createDepartment(deptName) {     
     try {

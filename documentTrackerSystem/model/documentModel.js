@@ -11,9 +11,14 @@ async function getAllDocuments(userId){
         if(!found) {
             return {error : "User Not Found"}
         }
-        const allDocuments = prisma.document.findMany({
+        const allDocuments = await prisma.document.findMany({
             where : {userId}
         });
+
+        if(allDocuments.length === 0){
+            return {msg : "No Documents Found"}
+        }
+
         return allDocuments;
     } catch (error) {
         return error

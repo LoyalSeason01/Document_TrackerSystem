@@ -12,6 +12,8 @@ CREATE TABLE "User" (
     "password" TEXT NOT NULL,
     "divisionId" UUID NOT NULL,
     "departmentId" UUID NOT NULL,
+    "staffId" UUID,
+    "roleId" UUID,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("userId")
 );
@@ -20,7 +22,6 @@ CREATE TABLE "User" (
 CREATE TABLE "Staff" (
     "staffId" UUID NOT NULL DEFAULT gen_random_uuid(),
     "staffNumber" TEXT NOT NULL,
-    "userId" UUID NOT NULL,
     "departmentId" UUID NOT NULL,
 
     CONSTRAINT "Staff_pkey" PRIMARY KEY ("staffId")
@@ -30,7 +31,6 @@ CREATE TABLE "Staff" (
 CREATE TABLE "Role" (
     "roleId" UUID NOT NULL DEFAULT gen_random_uuid(),
     "role" TEXT NOT NULL,
-    "userId" UUID NOT NULL,
 
     CONSTRAINT "Role_pkey" PRIMARY KEY ("roleId")
 );
@@ -110,12 +110,6 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "Staff_staffNumber_key" ON "Staff"("staffNumber");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Staff_userId_key" ON "Staff"("userId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Role_userId_key" ON "Role"("userId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Document_ref_key" ON "Document"("ref");
 
 -- CreateIndex
@@ -137,13 +131,13 @@ ALTER TABLE "User" ADD CONSTRAINT "User_divisionId_fkey" FOREIGN KEY ("divisionI
 ALTER TABLE "User" ADD CONSTRAINT "User_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("departmentId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Staff" ADD CONSTRAINT "Staff_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "User" ADD CONSTRAINT "User_staffId_fkey" FOREIGN KEY ("staffId") REFERENCES "Staff"("staffId") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role"("roleId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Staff" ADD CONSTRAINT "Staff_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("departmentId") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Role" ADD CONSTRAINT "Role_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Permissions" ADD CONSTRAINT "Permissions_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role"("roleId") ON DELETE RESTRICT ON UPDATE CASCADE;

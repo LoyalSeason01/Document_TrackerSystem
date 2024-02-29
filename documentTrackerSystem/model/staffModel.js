@@ -4,14 +4,27 @@ const prisma = new PrismaClient()
 
 async function getAllStaffs(){
     try {
-        const staff = await prisma.staff.findMany();
-        return await prisma.user.findMany({
+        const user = await prisma.user.findMany({
             where : {
-                userId : staff.userId
+               staff : null ,
+            },
+            select : {
+                name : true,
+                email : true,
+                staff : {
+                    select : {
+                        staffNumber : true
+                    }
+                }
             }
         });
+        
+
+        return {user};
+        
     } catch (error) {
-        return error;
+        console.error("Error:", error); // Log any errors that occur during execution
+        throw error; // Rethrow the error to handle it elsewhere if needed
     }
 }
 

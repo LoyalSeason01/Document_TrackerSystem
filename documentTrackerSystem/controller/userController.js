@@ -3,7 +3,7 @@ const {validationResult} = require('express-validator')
 
 async function getUserProfile(req, res){
     const userDetail = req.user
-    return res.send(userDetail);
+    return res.status(200).json(userDetail);
 
 }
 
@@ -11,15 +11,16 @@ async function updateUser(req, res){
     try {
 
         const error = validationResult(req);
-    
+       
         if(!error.isEmpty()){
             return res.status(400).json({error : error.array()});
         }else{
          
-        //Old UserDetails
-        const {userId} = req.user.user
-
-        //New userDetails
+      
+        // //Old UserDetails
+        const {userId} = req.user
+            
+        // //New userDetails
         const { name, email,  division, department, role} = req.body
 
         const updateUser = await userModel.updateUser(name, email, division, department, role , userId)

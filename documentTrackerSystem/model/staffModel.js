@@ -4,9 +4,9 @@ const prisma = new PrismaClient()
 
 async function getAllStaffs(){
     try {
-        const user = await prisma.user.findMany({
+        const staff = await prisma.user.findMany({
             where : {
-               staff : null ,
+               staff : {isNot : null} ,
             },
             select : {
                 name : true,
@@ -15,12 +15,22 @@ async function getAllStaffs(){
                     select : {
                         staffNumber : true
                     }
+                },
+                division: {
+                    select : {
+                        divisionName : true
+                    }
+                },
+                department : {
+                    select : {
+                        departmentName :true
+                    }
                 }
             }
         });
         
 
-        return {user};
+        return {staff};
         
     } catch (error) {
         console.error("Error:", error); // Log any errors that occur during execution

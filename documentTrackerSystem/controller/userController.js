@@ -2,8 +2,10 @@ const userModel = require('../model/userModel');
 const {validationResult} = require('express-validator')
 
 async function getUserProfile(req, res){
-    const userDetail = req.user
-    return res.status(200).json(userDetail);
+    const {userId} = req.user
+
+    const userDetails = await userModel.getUser(userId)
+    return res.status(200).json(userDetails);
 
 }
 

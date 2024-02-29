@@ -3,14 +3,37 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-async function getUser(email){
-    try {
+async function getUser(userId){
+    try{
 
-        return await prisma.user.findUnique({
-            where : {email : email},
-        })        
+        
+        const user = await prisma.user.findUnique({
+            where : {userId},
+            select: {
+                userId: true,
+                name: true,
+                email: true,
+                role : true,
+                division: true,
+                department : true,
+            }
+        });
 
-    } catch (error) {
+        if(!user){
+            return {error : "User Not Found"}
+        }
+
+
+        return {
+                userId,
+                name : user.name,
+                email : user.email,
+                division : user.division.divisionName,
+                department : user.department.departmentName,
+                role  : user.role.role,
+             }
+
+    }catch (error){
         return { 
             error: {
                 message: error.message || "An error occurred",

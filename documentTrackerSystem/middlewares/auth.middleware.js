@@ -24,11 +24,12 @@ async function protect(req, res, next) {
             next();
         } else {
             // No token provided
-            return res.status(401).json({ error: 'Not Authorized, No Token' });
+            return res.status(401).json({ error: 'Not Authorized' });
         }
     } catch (error) {
-        console.log(error);
-        return res.status(401).json({ error: 'Not Authorized' });
+        return res.status(401).json({ error: 'Not Authorized',
+        
+    });
     }
 
 }

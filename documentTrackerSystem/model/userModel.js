@@ -67,15 +67,53 @@ async function getUserById(userId){
     }
 }
 
+async function getUserProfile(userId){
+    try{
+
+        
+        const user = await prisma.user.findUnique({
+            where : {userId},
+            select: {
+                userId: true,
+                name: true,
+                email: true,
+                role : true,
+                division: true,
+                department : true,
+            }
+        });
+
+        if(!user){
+            return {error : "User Not Found"}
+        }
+
+        return {
+                name : user.name,
+                email : user.email,
+                division : user.division.divisionName,
+                department : user.department.departmentName,
+                role  : user.role.role
+             }
+
+    }catch (error){
+        return { 
+            error: {
+                message: error.message || "An error occurred",
+                name: error.name || "UnknownError"
+            } 
+        };
+    }
+}
+
 async function createUser(name, email, password, divisionName, deptName){
 
     try {
-        const foundEmail = await prisma.user.findMany({
+        const foundEmail = await prisma.user.findUnique({
             where : {email : email}
         });
 
     
-    if(foundEmail.length === 0){
+    if(!foundEmail){
        
         const division = await prisma.division.create({
             data: {
@@ -234,6 +272,7 @@ async function deleteUser(email){
 module.exports = {
     getUser,
     getUserById,
+    getUserProfile,
     createUser,
     updateUser,
     resetPassword,

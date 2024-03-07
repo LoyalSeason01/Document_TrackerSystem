@@ -14,7 +14,7 @@ async function logInUser(req, res){
         return res.status(400).json({error : error.array()});
     }else{
     const user = await userModel.getUser(email);
-    
+  
     if(user){
         const auth = await bCrypt.compare(password, user.password);
     
@@ -25,7 +25,7 @@ async function logInUser(req, res){
             token : generateToken(user.userId),
           });
         }else{
-            return res.status(401).json({error : "Incorrect Password"})
+            return res.status(401).json({error : "Invalid Credential"})
           }
     }else{
         return res.status(400).json({error : 'Incorrect or Email Not Found'})
@@ -50,7 +50,7 @@ async function signUpUser(req, res){
             const newUser = await userModel.createUser(name, email, encryptedPassword, division, department);
         
             if(newUser.error){
-                return res.send(newUser)
+                return r8es.send(newUser)
             }
 
             const userId = newUser.newUser.userId
@@ -115,12 +115,13 @@ async function resetPassword(req, res){
 
 async function refreshedUser(req, res){
   const refreshToken = req.cookies['refreshToken'];
+
+  try {
   
   if(!refreshToken){
     return res.status(401).send('Access Denied. No refresh token provided.');
   }
-  
-  try {
+
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN);
     const accessToken = generateToken(decoded.id)
     res

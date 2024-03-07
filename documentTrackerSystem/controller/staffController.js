@@ -4,7 +4,7 @@ const bCrypt = require('bcrypt');
 async function getAllStaffs(req, res){
     return res.send(await staffModel.getAllStaffs())
 }
-
+ 
 
 async function createStaffUser(req, res){
         const {name, email, password,  division, department, staffNumber} = req.body;

@@ -1,7 +1,8 @@
 const { Prisma } = require('@prisma/client');
 const documentModel = require('../model/documentModel');
 const {validationResult} = require('express-validator');
-
+const upload = require('../middlewares/attachmentMiddleware');
+const multer = require('multer');
 
 async function getAllDocuments(req, res){
     const { userId }= req.user
@@ -50,6 +51,25 @@ async function updateDocument(req, res){
 
 }
 
+async function uploadDocument(req, res){
+
+
+    upload(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+
+            return res.status(400).json({ message: 'Multer error occurred', error: err.message });
+        } else if (err) {
+
+           return res.status(400).json({ message: 'An error occurred during file upload', error: err.message });
+        } else if (!req.file) {
+
+           return res.status(400).json({ message: 'No file uploaded' });
+        }
+        
+        res.json({ msg: "File Uploaded Successfully" });
+    });
+}
+
 async function deleteDocument(req, res){
     const {ref} = req.body
     const {userId} = req.user
@@ -63,5 +83,6 @@ module.exports = {
     getASingleDocument,
     createNewDocument,
     updateDocument,
+    uploadDocument,
     deleteDocument
 }

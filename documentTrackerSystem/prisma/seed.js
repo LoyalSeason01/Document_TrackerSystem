@@ -2,7 +2,6 @@ const {PrismaClient} = require('@prisma/client');
 const bCrypt =  require('bcrypt');
 
 const {PERMISSIONS} = require('../utils/role.permissions');
-const { connect } = require('../router/userRouter');
 
 const prisma = new PrismaClient();
 
@@ -372,6 +371,7 @@ async function seedDatabase() {
                 console.log(`User with email ${email} already exists.`);
             }
         }
+        console.log(`Database has been seeded. 🌱`);
     } catch (error) {
         console.error('Error seeding database:', error);
     } finally {

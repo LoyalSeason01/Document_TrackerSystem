@@ -76,34 +76,41 @@ model Document {
   date          DateTime @default(now())
   ref           String   @unique
   status        Status   @default(Pending)
-  documentPath  String
   user          User     @relation(fields: [userId], references: [userId])
   userId        String   @db.Uuid
-  userDocId     userDocument[]
+  userDocument  userDocument[]
+  trail         Trail[]   
 }
 
 model Trail {
-  trailside String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  sender    Int
-  receiver  Int
-  status    Status  @default(Pending)
+  trailsId    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sender      String
+  receiver    String
+  status      Status    @default(Pending)
+  document    Document  @relation(fields: [docID], references: [docID], onDelete: Cascade)
+  docID       String    @db.Uuid
 }
 
 model userDocument {
-  userDocId    String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // userDocId    String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user         User       @relation(fields: [userId], references: [userId])
   userId       String     @unique @db.Uuid
   document     Document   @relation(fields: [docID], references: [docID])
   docID        String     @unique @db.Uuid
+
+ @@id([userId, docID])
+
 }
 
 
 model rolePermission {
-  rolePermissionId    String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // rolePermissionId    String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   role                Role          @relation(fields: [roleId], references: [roleId])
   roleId              String        @unique @db.Uuid
   permission          Permissions   @relation(fields: [permissionId], references: [permissionsId])
   permissionId        String        @unique @db.Uuid
+
+   @@id([roleId, permissionId])
 }
 
 enum Status {

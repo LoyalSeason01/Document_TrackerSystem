@@ -69,7 +69,6 @@ CREATE TABLE "Document" (
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "ref" TEXT NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'Pending',
-    "documentPath" TEXT NOT NULL,
     "userId" UUID NOT NULL,
 
     CONSTRAINT "Document_pkey" PRIMARY KEY ("docID")
@@ -77,12 +76,13 @@ CREATE TABLE "Document" (
 
 -- CreateTable
 CREATE TABLE "Trail" (
-    "trailside" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "sender" INTEGER NOT NULL,
-    "receiver" INTEGER NOT NULL,
+    "trailsId" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "sender" TEXT NOT NULL,
+    "receiver" TEXT NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'Pending',
+    "docID" UUID NOT NULL,
 
-    CONSTRAINT "Trail_pkey" PRIMARY KEY ("trailside")
+    CONSTRAINT "Trail_pkey" PRIMARY KEY ("trailsId")
 );
 
 -- CreateTable
@@ -147,6 +147,9 @@ ALTER TABLE "Department" ADD CONSTRAINT "Department_divisionId_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "Document" ADD CONSTRAINT "Document_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Trail" ADD CONSTRAINT "Trail_docID_fkey" FOREIGN KEY ("docID") REFERENCES "Document"("docID") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "userDocument" ADD CONSTRAINT "userDocument_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
